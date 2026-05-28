@@ -15,7 +15,7 @@ def configurar_dataset():
         os.makedirs(pasta, exist_ok=True)
     print("✔ Estructura de directorios /data creada correctamente.")
 
-    # 2. Archivos placeholder para validar el pipeline de carga de imágenes
+    # 2. Archivos placeholder para validar el pipeline de carga de imágenes de prova
     for pasta in subpastas:
         with open(os.path.join(pasta, "placeholder.txt"), "w") as f:
             f.write("Amostra de imagem médica homologada para teste da CNN.")
