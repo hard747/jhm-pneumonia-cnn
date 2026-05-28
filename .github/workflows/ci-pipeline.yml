@@ -1,0 +1,49 @@
+name: JHM AI Integration Continua (CI)
+
+# El pipeline se activa automáticamente con cada git push en las ramas principales
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  test_and_verify:
+    runs-on: ubuntu-latest
+
+    # Servicios en paralelo: Levanta un MySQL virtual en la nube de GitHub para los tests
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: jhm_pneumonia_auditoria_test
+          MYSQL_USER: jhm_user
+          MYSQL_PASSWORD: jhm_password
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    # 1. Descarga el código del repositorio
+    - name: Descargar codigo
+      uses: actions/checkout@v3
+
+    # 2. Configura el entorno de Python en el servidor de GitHub
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    # 3. Instala las librerías necesarias (incluyendo PyTorch para CPU en el servidor de pruebas)
+    - name: Instalar librerias y dependencias
+      run: |
+        python -module pip install --upgrade pip
+        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+        pip install -r requirements.txt
+        pip install pymysql cryptography  # Para conectar Python con MySQL
+
+    # 4. Corre la prueba técnica de la Red Neuronal para verificar que compila bien
+    - name: Ejecutar Test de Arquitectura de la IA
+      run: |
+        python src/model.py

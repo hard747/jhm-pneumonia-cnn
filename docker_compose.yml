@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Contenedor de la Base de Datos
+  db:
+    image: mysql:8.0
+    container_name: jhm_mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: jhm_pneumonia_auditoria
+      MYSQL_USER: jhm_user
+      MYSQL_PASSWORD: jhm_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Contenedor de nuestra API e IA (Se activará por completo más adelante)
+  web:
+    build: .
+    container_name: jhm_api_ia
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=mysql+pymysql://jhm_user:jhm_password@db:3306/jhm_pneumonia_auditoria
+
+volumes:
+  mysql_data:
