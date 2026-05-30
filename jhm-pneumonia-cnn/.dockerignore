@@ -1,0 +1,16 @@
+# Ignorar el entorno virtual de Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Ignorar carpetas pesadas de datos e imágenes médicas
+data/
+datasets/
+images/
+notebooks/
+
+# Ignorar archivos temporales e históricos de Git
+.git/
+.gitignore
+.vscode/

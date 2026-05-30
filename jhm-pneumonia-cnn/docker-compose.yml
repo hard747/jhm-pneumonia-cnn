@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Contenedor de la Base de Datos
   db:
@@ -12,7 +10,7 @@ services:
       MYSQL_USER: jhm_user
       MYSQL_PASSWORD: jhm_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
