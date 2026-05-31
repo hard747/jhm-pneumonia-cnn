@@ -1,29 +1,37 @@
 services:
-  # Contenedor de la Base de Datos
   db:
-    image: mysql:8.0
-    container_name: jhm_mysql_db
+    image: postgres:16-alpine
+    container_name: jhm_postgres_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: jhm_pneumonia_auditoria
-      MYSQL_USER: jhm_user
-      MYSQL_PASSWORD: jhm_password
+      POSTGRES_DB: jhm_pneumonia_auditoria
+      POSTGRES_USER: jhm_user
+      POSTGRES_PASSWORD: jhm_password
     ports:
-      - "3307:3306"
+      - "5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jhm_user -d jhm_pneumonia_auditoria"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
-  # Contenedor de nuestra API e IA (Se activará por completo más adelante)
   web:
     build: .
     container_name: jhm_api_ia
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      - DATABASE_URL=mysql+pymysql://jhm_user:jhm_password@db:3306/jhm_pneumonia_auditoria
+      - DATABASE_URL=postgresql+psycopg2://jhm_user:jhm_password@db:5432/jhm_pneumonia_auditoria
+    volumes:
+      - ./api:/app/api
+      - ./src:/app/src
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:
-  mysql_data:
+  postgres_data:

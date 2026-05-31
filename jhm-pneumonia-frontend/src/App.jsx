@@ -32,7 +32,7 @@ function App() {
 
     try {
       // Nos conectamos al puerto de tu contenedor Docker (FastAPI)
-      const response = await fetch('http://localhost:8000/predict', {
+      const response = await fetch('http://127.0.0.1:8000/predict', {
         method: 'POST',
         body: formData,
       });
@@ -113,7 +113,7 @@ function App() {
               {result.prediction === 'PNEUMONIA' ? '🔴 Neumonía' : '🟢 Sano'}
             </p>
             <p style={{ fontSize: '0.75rem', color: '#9ca3af', margin: '0.5rem 0 0 0' }}>
-              Confianza del modelo: {(result.confidence * 100).toFixed(2)}%
+              Confianza del modelo: {result.confidence.toFixed(2)}%
             </p>
           </div>
         )}
