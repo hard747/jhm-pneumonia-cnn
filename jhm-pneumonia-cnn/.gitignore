@@ -223,3 +223,5 @@ data/
 # Ignorar .dev
 
 .env
+
+requirements2.txt
