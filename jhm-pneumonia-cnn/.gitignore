@@ -219,3 +219,7 @@ __marimo__/
 
 # Ignorar imágenes médicas pesadas del hospital
 data/
+
+# Ignorar .dev
+
+.env

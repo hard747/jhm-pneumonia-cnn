@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:16-alpine
@@ -26,8 +28,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      - DATABASE_URL=postgresql+psycopg2://jhm_user:jhm_password@db:5432/jhm_pneumonia_auditoria
+    # 🔌 Vincula tu archivo .env local con el contenedor de Docker
+    env_file:
+      - .env
     volumes:
       - ./api:/app/api
       - ./src:/app/src
