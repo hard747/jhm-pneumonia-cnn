@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // 🔌 CONEXIÓN AUTOMÁTICA PROFESIONAL
-// Si existe la variable en Vercel, la usa. Si estás en local, usa el Docker de tu PC de forma automática.
+// Si existe la variable en Vercel, la usa. Si estás en local, usa tu archivo .env.development.
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/predict';
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
     e.preventDefault();
     if (!image) return;
 
-    loading(true);
+    setLoading(true); // 🚀 ¡CORREGIDO! Ahora sí cambia el estado de carga correctamente
     setError(null);
 
     // En la industria, las imágenes se envían como Multipart/FormData
@@ -35,7 +35,7 @@ function App() {
     formData.append('file', image);
 
     try {
-      // 🚀 Nos conectamos dinámicamente usando la URL activa (local o remota)
+      // Nos conectamos dinámicamente usando la URL activa (local o remota)
       const response = await fetch(API_URL, {
         method: 'POST',
         body: formData,
