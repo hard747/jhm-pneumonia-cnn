@@ -10,9 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.model import PneumoniaCNN
 from api.database import engine, Base, SessionLocal
-# from api.models import AuditoriaDiagnostico
 import api.models
-from api.models import AuditoriaDiagnostico # Mantén este abajo si lo usas en el código
+from api.models import AuditoriaDiagnostico 
 
 # --- Modelo cargado una sola vez al iniciar ---
 _MODEL_PATH = os.path.join(os.path.dirname(__file__), "pneumonia_model.pth")
@@ -35,7 +34,6 @@ _transform = transforms.Compose([
 _CLASSES = ["NORMAL", "PNEUMONIA"]
 
 try:
-    # Base.metadata.create_all(bind=engine)
     import api.models # Forzamos que se cargue la estructura justo aquí
     Base.metadata.create_all(bind=engine)
     print("[DB] ¡Intento de creación de tablas ejecutado con éxito!")
@@ -44,9 +42,17 @@ except Exception as e:
 
 app = FastAPI(title="JHM Pneumonia Detection API", version="2.0.0")
 
+# 🔌 CONFIGURACIÓN DE CORS EN PRODUCCIÓN CORREGIDA
+# Añadimos tu URL de Vercel para romper el bloqueo de seguridad en internet
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://127.0.0.1:5173", 
+        "http://localhost:5174", 
+        "http://127.0.0.1:5174",
+        "https://jhm-pneumonia-cnn.vercel.app"  # 🚀 ¡Permiso concedido a Vercel en la nube!
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -86,8 +92,6 @@ def read_root():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    # await file.read() es crítico: deja al event loop recibir todos los bytes
-    # antes de procesarlos. Sin esto hay deadlock desde Docker networking.
     contents = await file.read()
 
     loop = asyncio.get_event_loop()
