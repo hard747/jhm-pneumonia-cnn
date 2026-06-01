@@ -10,7 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.model import PneumoniaCNN
 from api.database import engine, Base, SessionLocal
-from api.models import AuditoriaDiagnostico
+# from api.models import AuditoriaDiagnostico
+import api.models
+from api.models import AuditoriaDiagnostico # Mantén este abajo si lo usas en el código
 
 # --- Modelo cargado una sola vez al iniciar ---
 _MODEL_PATH = os.path.join(os.path.dirname(__file__), "pneumonia_model.pth")
@@ -33,7 +35,10 @@ _transform = transforms.Compose([
 _CLASSES = ["NORMAL", "PNEUMONIA"]
 
 try:
+    # Base.metadata.create_all(bind=engine)
+    import api.models # Forzamos que se cargue la estructura justo aquí
     Base.metadata.create_all(bind=engine)
+    print("[DB] ¡Intento de creación de tablas ejecutado con éxito!")
 except Exception as e:
     print(f"[DB] Advertencia al crear tablas: {e}")
 

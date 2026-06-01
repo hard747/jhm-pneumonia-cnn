@@ -34,7 +34,9 @@ services:
     volumes:
       - ./api:/app/api
       - ./src:/app/src
-    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    #command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    #command: python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    command: sh -c "pip install --no-cache-dir uvicorn psycopg2-binary && python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload"
 
 volumes:
   postgres_data:
