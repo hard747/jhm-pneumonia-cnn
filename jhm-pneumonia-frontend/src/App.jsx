@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 
+// 🔌 CONEXIÓN AUTOMÁTICA PROFESIONAL
+// Si existe la variable en Vercel, la usa. Si estás en local, usa el Docker de tu PC de forma automática.
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/predict';
+
 function App() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -23,7 +27,7 @@ function App() {
     e.preventDefault();
     if (!image) return;
 
-    setLoading(true);
+    loading(true);
     setError(null);
 
     // En la industria, las imágenes se envían como Multipart/FormData
@@ -31,8 +35,8 @@ function App() {
     formData.append('file', image);
 
     try {
-      // Nos conectamos al puerto de tu contenedor Docker (FastAPI)
-      const response = await fetch('http://127.0.0.1:8000/predict', {
+      // 🚀 Nos conectamos dinámicamente usando la URL activa (local o remota)
+      const response = await fetch(API_URL, {
         method: 'POST',
         body: formData,
       });
@@ -113,7 +117,7 @@ function App() {
               {result.prediction === 'PNEUMONIA' ? '🔴 Neumonía' : '🟢 Sano'}
             </p>
             <p style={{ fontSize: '0.75rem', color: '#9ca3af', margin: '0.5rem 0 0 0' }}>
-              Confianza del modelo: {result.confidence.toFixed(2)}%
+              Confianza del modelo: {result.confidence ? result.confidence.toFixed(2) : "0.00"}%
             </p>
           </div>
         )}
