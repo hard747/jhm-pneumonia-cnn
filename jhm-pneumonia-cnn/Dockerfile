@@ -3,21 +3,16 @@ FROM python:3.8-slim
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    glib2.0-0 \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Torch va en su propia capa — así no se re-descarga si cambia requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --default-timeout=300 \
+    pip install --no-cache-dir \
     torch==2.0.1 torchvision==0.15.2 \
     --index-url https://download.pytorch.org/whl/cpu
 
-# Solo se re-ejecuta si requirements.txt cambia (segundos, no horas)
 COPY requirements.txt .
-RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
