@@ -11,9 +11,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Torch va en su propia capa — así no se re-descarga si cambia requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --default-timeout=1000 \
-    torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 \
-    --index-url https://download.pytorch.org/whl/cu118
+    pip install --no-cache-dir --default-timeout=300 \
+    torch==2.0.1 torchvision==0.15.2 \
+    --index-url https://download.pytorch.org/whl/cpu
 
 # Solo se re-ejecuta si requirements.txt cambia (segundos, no horas)
 COPY requirements.txt .
