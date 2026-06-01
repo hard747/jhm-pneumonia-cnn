@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: jhm-pneumonia-api
+    runtime: docker
+    dockerfilePath: jhm-pneumonia-cnn/Dockerfile
+    dockerContext: jhm-pneumonia-cnn
+    plan: free
+    region: oregon
+    branch: main
+    envVars:
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_SSLMODE
+        sync: false
