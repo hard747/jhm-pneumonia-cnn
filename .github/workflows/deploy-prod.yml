@@ -11,7 +11,7 @@ jobs:
     environment: production   # requiere aprobacion manual en GitHub Settings
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Trigger deploy en Render Production
         run: |
