@@ -1,0 +1,25 @@
+name: Deploy → Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-production:
+    name: Deploy a Render Production
+    runs-on: ubuntu-latest
+    environment: production   # requiere aprobacion manual en GitHub Settings
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trigger deploy en Render Production
+        run: |
+          curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_PROD_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print('Deploy prod:', d.get('id'), '| Status:', d.get('status'))"
+
+      - name: Notificar despliegue exitoso
+        run: echo "Deploy a produccion completado - version ${{ github.ref_name }} - commit ${{ github.sha }}"

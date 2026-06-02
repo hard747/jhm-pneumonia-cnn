@@ -1,0 +1,25 @@
+name: Deploy → Staging
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  deploy-staging:
+    name: Deploy a Render Staging
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trigger deploy en Render Staging
+        run: |
+          curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_STAGING_SERVICE_ID }}/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            | python3 -c "import json,sys; d=json.load(sys.stdin); print('Deploy staging:', d.get('id'), '| Status:', d.get('status'))"
+
+      - name: Notificar resultado
+        run: echo "Deploy a staging iniciado desde rama dev - commit ${{ github.sha }}"

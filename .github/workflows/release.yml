@@ -1,0 +1,36 @@
+name: Release - Semantic Versioning
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Crear Release con Semantic Versioning
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: python
+          package-name: jhm-pneumonia-cnn
+          changelog-types: |
+            [
+              {"type": "feat", "section": "Nuevas funcionalidades"},
+              {"type": "fix", "section": "Correcciones de bugs"},
+              {"type": "perf", "section": "Mejoras de rendimiento"},
+              {"type": "docs", "section": "Documentacion"},
+              {"type": "chore", "section": "Mantenimiento", "hidden": true}
+            ]
+
+      - name: Info del release
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          echo "Release creado: v${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}"
+          echo "Tag: ${{ steps.release.outputs.tag_name }}"

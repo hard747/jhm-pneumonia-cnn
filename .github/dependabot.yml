@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/jhm-pneumonia-cnn"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies", "security"]
+
+  - package-ecosystem: "npm"
+    directory: "/jhm-pneumonia-frontend"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies", "security"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies", "ci"]
