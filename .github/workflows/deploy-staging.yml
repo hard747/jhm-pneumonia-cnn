@@ -11,7 +11,7 @@ jobs:
     environment: staging
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Trigger deploy en Render Staging
         run: |
