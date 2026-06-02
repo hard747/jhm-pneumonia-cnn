@@ -52,7 +52,7 @@ jobs:
           pytest --cov=api --cov-report=xml --cov-report=term-missing -v
 
       - name: Subir reporte de cobertura
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         if: always()
         with:
           file: jhm-pneumonia-cnn/coverage.xml
