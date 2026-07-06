@@ -103,16 +103,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Prometheus: expone /metrics automaticamente
-Instrumentator(
-    should_group_status_codes=True,
-    should_ignore_untemplated=True,
-    should_instrument_requests_inprogress=True,
-    inprogress_labels=True,
-).instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
+# Prometheus y OpenTelemetry solo en produccion (no en tests para evitar conflictos de registro)
+if not _TESTING:
+    Instrumentator(
+        should_group_status_codes=True,
+        should_ignore_untemplated=True,
+        should_instrument_requests_inprogress=True,
+        inprogress_labels=True,
+    ).instrument(app).expose(app, endpoint="/metrics", include_in_schema=False)
 
-# OpenTelemetry: instrumenta todas las rutas automaticamente
-FastAPIInstrumentor.instrument_app(app)
+    FastAPIInstrumentor.instrument_app(app)
 
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
