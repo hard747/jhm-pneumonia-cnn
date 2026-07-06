@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir "numpy>=1.21.0,<2.0.0" && \
     pip install --no-cache-dir \
     torch==2.0.1 torchvision==0.15.2 \
     --index-url https://download.pytorch.org/whl/cpu
