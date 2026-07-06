@@ -14,11 +14,21 @@ jobs:
 
       - name: Trigger deploy en Render Production
         run: |
-          curl -s -X POST "https://api.render.com/v1/services/${{ secrets.RENDER_PROD_SERVICE_ID }}/deploys" \
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            "https://api.render.com/v1/services/${{ secrets.RENDER_PROD_SERVICE_ID }}/deploys" \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{}' \
-            | python3 -c "import json,sys; d=json.load(sys.stdin); print('Deploy prod:', d.get('id'), '| Status:', d.get('status'))"
+            -d '{}')
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $BODY"
+          if [ "$HTTP_CODE" = "201" ] || [ "$HTTP_CODE" = "200" ]; then
+            echo "$BODY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('Deploy prod:', d.get('id'), '| Status:', d.get('status'))" 2>/dev/null || echo "Deploy disparado correctamente"
+          else
+            echo "Error al disparar deploy: HTTP $HTTP_CODE"
+            exit 1
+          fi
 
       - name: Notificar despliegue exitoso
         run: echo "Deploy a produccion completado - version ${{ github.ref_name }} - commit ${{ github.sha }}"
