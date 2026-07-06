@@ -23,8 +23,9 @@ jobs:
           BODY=$(echo "$RESPONSE" | head -n -1)
           echo "HTTP Status: $HTTP_CODE"
           echo "Response: $BODY"
-          if [ "$HTTP_CODE" = "201" ] || [ "$HTTP_CODE" = "200" ]; then
-            echo "$BODY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('Deploy prod:', d.get('id'), '| Status:', d.get('status'))" 2>/dev/null || echo "Deploy disparado correctamente"
+          if echo "$HTTP_CODE" | grep -qE '^2'; then
+            echo "Deploy disparado correctamente (HTTP $HTTP_CODE)"
+            [ -n "$BODY" ] && echo "$BODY" | python3 -c "import json,sys; d=json.load(sys.stdin); print('Deploy ID:', d.get('id'), '| Status:', d.get('status'))" 2>/dev/null || true
           else
             echo "Error al disparar deploy: HTTP $HTTP_CODE"
             exit 1
