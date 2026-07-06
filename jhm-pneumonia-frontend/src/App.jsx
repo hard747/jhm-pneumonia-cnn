@@ -23,34 +23,31 @@ function App() {
   };
 
   // Concepto Industrial: Petición HTTP asíncrona (AJAX)
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!image) return;
 
-    try {
-      setLoading(true);
-      setError(null);
-      setResult(null);
+    setLoading(true);
+    setError(null);
+    setResult(null);
 
-      const formData = new FormData();
-      formData.append('file', image);
+    const formData = new FormData();
+    formData.append('file', image);
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: formData,
+    fetch(API_URL, { method: 'POST', body: formData })
+      .then((response) => {
+        if (!response.ok) throw new Error('Error en el servidor. Código: ' + response.status);
+        return response.json();
+      })
+      .then((data) => {
+        setResult(data);
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-
-      if (!response.ok) {
-        throw new Error('Error en el servidor de IA. Código: ' + response.status);
-      }
-
-      const data = await response.json();
-      setResult(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
