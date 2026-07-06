@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 // 🔌 CONEXIÓN AUTOMÁTICA PROFESIONAL
 // Si existe la variable en Vercel, la usa. Si estás en local, usa tu archivo .env.development.
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/predict';
+const API_URL = import.meta.env.VITE_API_URL || 'https://jhm-pneumonia-api.onrender.com/predict';
 
 function App() {
   const [image, setImage] = useState(null);
@@ -27,15 +27,14 @@ function App() {
     e.preventDefault();
     if (!image) return;
 
-    setLoading(true); // 🚀 ¡CORREGIDO! Ahora sí cambia el estado de carga correctamente
-    setError(null);
-
-    // En la industria, las imágenes se envían como Multipart/FormData
-    const formData = new FormData();
-    formData.append('file', image);
-
     try {
-      // Nos conectamos dinámicamente usando la URL activa (local o remota)
+      setLoading(true);
+      setError(null);
+      setResult(null);
+
+      const formData = new FormData();
+      formData.append('file', image);
+
       const response = await fetch(API_URL, {
         method: 'POST',
         body: formData,
@@ -46,7 +45,7 @@ function App() {
       }
 
       const data = await response.json();
-      setResult(data); // Guardamos la predicción de la neurona
+      setResult(data);
     } catch (err) {
       setError(err.message);
     } finally {
