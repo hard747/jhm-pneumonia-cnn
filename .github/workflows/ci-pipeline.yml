@@ -30,7 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install -r jhm-pneumonia-cnn/requirements.txt
-          pip install pytest httpx psycopg2-binary pytest-cov bandit safety
+          pip install pytest "httpx>=0.23.0,<0.27.0" psycopg2-binary pytest-cov bandit safety
 
       - name: SAST - Escaneo de seguridad (bandit)
         run: bandit -r jhm-pneumonia-cnn/api jhm-pneumonia-cnn/src -ll -q || true
