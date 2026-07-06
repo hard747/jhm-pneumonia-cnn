@@ -219,7 +219,7 @@ async def predict(request: Request, file: UploadFile = File(...)):
 
         contents = await file.read()
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         prediction, confidence_pct = await loop.run_in_executor(None, _run_inference, contents)
 
         latency_ms = round((time.perf_counter() - t_start) * 1000, 2)
