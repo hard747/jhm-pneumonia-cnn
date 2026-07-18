@@ -1,0 +1,50 @@
+{
+  "best_config": {
+    "config": "augmentation_10ep",
+    "lr": 0.001,
+    "augmentation": true,
+    "epochs": 10,
+    "tuning_val_accuracy": 0.7831,
+    "tuning_val_f1_macro": 0.7217,
+    "tuning_val_recall_pneumonia": 1.0,
+    "tuning_val_recall_normal": 0.4194,
+    "train_seconds": 517.1
+  },
+  "search_results": [
+    {
+      "config": "baseline_5ep",
+      "lr": 0.001,
+      "augmentation": false,
+      "epochs": 5,
+      "tuning_val_accuracy": 0.7108,
+      "tuning_val_f1_macro": 0.5905,
+      "tuning_val_recall_pneumonia": 1.0,
+      "tuning_val_recall_normal": 0.2258,
+      "train_seconds": 248.8
+    },
+    {
+      "config": "augmentation_5ep",
+      "lr": 0.001,
+      "augmentation": true,
+      "epochs": 5,
+      "tuning_val_accuracy": 0.7711,
+      "tuning_val_f1_macro": 0.7048,
+      "tuning_val_recall_pneumonia": 0.9936,
+      "tuning_val_recall_normal": 0.3978,
+      "train_seconds": 249.7
+    },
+    {
+      "config": "augmentation_10ep",
+      "lr": 0.001,
+      "augmentation": true,
+      "epochs": 10,
+      "tuning_val_accuracy": 0.7831,
+      "tuning_val_f1_macro": 0.7217,
+      "tuning_val_recall_pneumonia": 1.0,
+      "tuning_val_recall_normal": 0.4194,
+      "train_seconds": 517.1
+    }
+  ],
+  "holdout_idx_count": 375,
+  "note": "candidate_model.pth debe compararse contra el modelo de produccion en el holdout final antes de reemplazarlo"
+}

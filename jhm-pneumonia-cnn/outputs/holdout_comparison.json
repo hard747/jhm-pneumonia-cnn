@@ -1,0 +1,17 @@
+{
+  "production": {
+    "checkpoint": "pneumonia_model.pth",
+    "accuracy": 0.7867,
+    "f1_macro": 0.7427,
+    "recall_pneumonia": 0.9615,
+    "recall_normal": 0.4965
+  },
+  "candidate": {
+    "checkpoint": "candidate_model.pth",
+    "accuracy": 0.72,
+    "f1_macro": 0.6148,
+    "recall_pneumonia": 0.9957,
+    "recall_normal": 0.2624
+  },
+  "winner": "produccion (sin cambios)"
+}

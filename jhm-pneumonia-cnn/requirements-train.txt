@@ -1,0 +1,13 @@
+# Dependencias adicionales para entrenar/evaluar/optimizar el modelo
+# localmente (src/train.py, src/evaluate.py, src/tune.py,
+# src/compare_holdout.py). No se instalan en el Dockerfile de produccion:
+# la API de inferencia no las necesita.
+#
+# torch y torchvision no estan aqui a proposito -- se instalan por
+# separado con el indice de PyTorch correspondiente (CPU o CUDA), igual
+# que en el Dockerfile y en ci-pipeline.yml:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+# (o el indice cu118/cu121 si tenes GPU NVIDIA local, como en este proyecto)
+
+scikit-learn>=1.3.0
+matplotlib>=3.7.0

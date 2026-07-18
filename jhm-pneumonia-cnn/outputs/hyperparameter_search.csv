@@ -1,0 +1,4 @@
+config,lr,augmentation,epochs,tuning_val_accuracy,tuning_val_f1_macro,tuning_val_recall_pneumonia,tuning_val_recall_normal,train_seconds
+baseline_5ep,0.001,False,5,0.7108,0.5905,1.0,0.2258,248.8
+augmentation_5ep,0.001,True,5,0.7711,0.7048,0.9936,0.3978,249.7
+augmentation_10ep,0.001,True,10,0.7831,0.7217,1.0,0.4194,517.1

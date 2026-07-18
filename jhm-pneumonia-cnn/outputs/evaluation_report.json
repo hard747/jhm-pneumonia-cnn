@@ -1,0 +1,40 @@
+{
+  "n_samples": 624,
+  "accuracy": 0.8093,
+  "per_class": {
+    "NORMAL": {
+      "precision": 0.9259,
+      "recall": 0.5342,
+      "f1": 0.6775,
+      "support": 234
+    },
+    "PNEUMONIA": {
+      "precision": 0.7771,
+      "recall": 0.9744,
+      "f1": 0.8646,
+      "support": 390
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "NORMAL",
+      "PNEUMONIA"
+    ],
+    "matrix": [
+      [
+        125,
+        109
+      ],
+      [
+        10,
+        380
+      ]
+    ]
+  },
+  "primary_metric": {
+    "name": "recall_PNEUMONIA",
+    "value": 0.9744,
+    "why": "en deteccion de neumonia, un falso negativo (recall bajo) es el error clinicamente mas caro"
+  },
+  "checkpoint": "api\\pneumonia_model.pth"
+}

@@ -32,18 +32,36 @@ from api.models import AuditoriaDiagnostico, ModelRegistry
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-# --- OpenTelemetry setup (envia trazas a Grafana Cloud si OTEL_ENDPOINT esta configurado) ---
+# --- OpenTelemetry setup (envia trazas y metricas a Grafana Cloud si
+# OTEL_EXPORTER_OTLP_ENDPOINT esta configurado) ---
+# No se pasan endpoint/headers explicitos a los exporters: se dejan sin
+# argumentos para que el SDK los lea el mismo de las variables de entorno
+# estandar (OTEL_EXPORTER_OTLP_ENDPOINT y OTEL_EXPORTER_OTLP_HEADERS) y les
+# agregue el sufijo correcto por tipo de senial (/v1/traces, /v1/metrics) --
+# pasar un endpoint manualmente rompe ese comportamiento y hay que armar el
+# sufijo a mano, mas propenso a error.
 _tracer_provider = TracerProvider()
 _otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 if _otlp_endpoint:
     try:
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-        _tracer_provider.add_span_processor(
-            BatchSpanProcessor(OTLPSpanExporter(endpoint=_otlp_endpoint))
-        )
-        logger.info(f"[OTEL] Trazas enviando a {_otlp_endpoint}")
+        _tracer_provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter()))
+        logger.info(f"[OTEL] Trazas enviando a {_otlp_endpoint}/v1/traces")
     except Exception as e:
-        logger.warning(f"[OTEL] No se pudo iniciar exporter: {e}")
+        logger.warning(f"[OTEL] No se pudo iniciar exporter de trazas: {e}")
+
+    try:
+        from opentelemetry import metrics
+        from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+        from opentelemetry.sdk.metrics import MeterProvider
+        from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+
+        _metric_reader = PeriodicExportingMetricReader(OTLPMetricExporter(), export_interval_millis=15000)
+        metrics.set_meter_provider(MeterProvider(metric_readers=[_metric_reader]))
+        logger.info(f"[OTEL] Metricas enviando a {_otlp_endpoint}/v1/metrics cada 15s")
+    except Exception as e:
+        logger.warning(f"[OTEL] No se pudo iniciar exporter de metricas: {e}")
+
 trace.set_tracer_provider(_tracer_provider)
 tracer = trace.get_tracer("jhm-pneumonia-api")
 
@@ -203,7 +221,7 @@ def model_info():
             }
     except Exception:
         pass
-    return {"active_model": {"version": _MODEL_VERSION, "accuracy": 0.974, "source": "env"}}
+    return {"active_model": {"version": _MODEL_VERSION, "accuracy": 0.8093, "source": "env"}}
 
 
 @app.post("/predict", tags=["Diagnostico"])
