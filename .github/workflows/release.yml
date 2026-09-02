@@ -19,15 +19,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: python
-          package-name: jhm-pneumonia-cnn
-          changelog-types: |
-            [
-              {"type": "feat", "section": "Nuevas funcionalidades"},
-              {"type": "fix", "section": "Correcciones de bugs"},
-              {"type": "perf", "section": "Mejoras de rendimiento"},
-              {"type": "docs", "section": "Documentacion"},
-              {"type": "chore", "section": "Mantenimiento", "hidden": true}
-            ]
 
       - name: Info del release
         if: ${{ steps.release.outputs.release_created }}
